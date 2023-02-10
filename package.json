@@ -1,0 +1,11 @@
+{
+  "name": "neural-network",
+  "version": "1.0.0",
+  "description": "Library that create neural networks",
+  "main": "index.js",
+  "author": "Yegor Knyazev (@yegorweb)",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.9.5"
+  }
+}
