@@ -2,27 +2,35 @@ import { appendFile, readFile } from "fs";
 
 var pwd = process.cwd()
 
+/** Library that create, fit, run neural networks */
 export module NN {
+
+  /** Class for initializating a neural network */
   export class NeuralNetwork {
     layers: Array<Layer>
     structure: Array<Array<number>> = []
   
     constructor(layers: Array<Layer>) {
       this.layers = layers
-      console.log(this.layers.length)
   
       readFile(pwd+'/structure.json', (err, data) => {
         if (err) return this.initStructure()
         this.structure = JSON.parse(data.toString())
-        console.log(this.structure)
       })
     }
-  
-    fit(): void {
-  
+
+    /** Fit a neural network */
+    public fit(parameters: FitParameters): void {
+      
     }
-  
-    initStructure(): void {
+
+    /** Run a neural network */
+    public evalute(): void {
+
+    }
+
+    /** Creates structure.json */
+    private initStructure(): void {
       this.structure = []
 
       for (let layer_index = 0; layer_index < this.layers.length; layer_index++) {
@@ -35,22 +43,55 @@ export module NN {
       }
   
       appendFile(pwd+'/structure.json', JSON.stringify(this.structure), (err) => console.error(err))
-      console.log(this.structure)
     }
   }
 
-  /** Класс, создающий слой нейронов */
+  /** Type of fit parameters */
+  interface FitParameters {
+    dataset: Dataset,
+    epochs: number,
+    activation_function_type: string
+  }
+
+
+
+  /** Creates neurons layer */
   export class Layer {
     neurons_amount: number
-
+    
     constructor(neurons_amount: number) {
       this.neurons_amount = neurons_amount
     }
   }
+  
+  /** Parse .data file and return dataset in type Array<DatasetItem> */
+  function parse_data(data_url: string): Array<DatasetItem> {
+    let result: Array<DatasetItem> = []
 
+    readFile(data_url, (err, data) => {
+      if (err) return console.error('Указанный файл с датасетом не существует')
+
+      // Разделяем на строки
+      data.toString().split('\n').forEach(() => {
+
+      })
+    })
+
+    return result
+  }
+
+  /** Creates a dataset */
   export class Dataset {
-    constructor() {
-
+    dataset: Array<DatasetItem>
+    
+    constructor(dataset: Array<DatasetItem>) {
+      this.dataset = dataset
     }
+  }
+
+  /** Type of dataset parameters */
+  interface DatasetItem {
+    input_data: Array<number>,
+    output_data: Array<number>
   }
 }
