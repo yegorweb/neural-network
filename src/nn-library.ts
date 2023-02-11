@@ -13,7 +13,7 @@ export module NN {
     constructor(layers: Array<Layer>) {
       this.layers = layers
   
-      readFile(pwd+'/structure.json', (err, data) => {
+      readFile(pwd+'/src/structure.json', (err, data) => {
         if (err) return this.initStructure()
         this.structure = JSON.parse(data.toString())
       })
@@ -42,7 +42,7 @@ export module NN {
         }
       }
   
-      appendFile(pwd+'/structure.json', JSON.stringify(this.structure), (err) => console.error(err))
+      appendFile(pwd+'/src/structure.json', JSON.stringify(this.structure), (err) => console.error(err))
     }
   }
 
@@ -65,15 +65,32 @@ export module NN {
   }
   
   /** Parse .data file and return dataset in type Array<DatasetItem> */
-  function parse_data(data_url: string): Array<DatasetItem> {
+  export function parse_data(data_url: string): Array<DatasetItem> {
     let result: Array<DatasetItem> = []
 
-    readFile(data_url, (err, data) => {
+    readFile(data_url, (err, data_text) => {
       if (err) return console.error('Указанный файл с датасетом не существует')
 
-      // Разделяем на строки
-      data.toString().split('\n').forEach(() => {
+      // Обнаруженные типы
+      let output_data_types: Array<string> = []
 
+      // Разделяем на строки
+      data_text.toString().split('\n').forEach((line) => {
+        let data = line.split(',')
+
+        // Входные данные в начале
+        let input_data: any = data.slice(0, -1)
+        // Результат в конце
+        let output_data: any = data.at(-1)
+
+        // Добавляем обнаруженный тип
+        if (!output_data_types.some(x => x == output_data)) output_data_types.push(output_data)
+
+        // Добавляем данные в результат
+        result.push({
+          input_data: input_data,
+          output_data: output_data_types.map(data_type => data_type == output_data ? 1 : 0)
+        })
       })
     })
 

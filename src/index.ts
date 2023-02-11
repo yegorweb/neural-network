@@ -7,3 +7,5 @@ const dataset = new NN.Dataset([
     output_data: [2]
   }
 ])
+
+console.log(NN.parse_data('src/iris.data'))
