@@ -12,6 +12,7 @@ export module NN {
   
     constructor(layers: Layer[]) {
       this.layers = layers
+      console.log('✨ Initailizated neural network')
   
       readFile(pwd+'/src/structure.json', (err, data) => {
         if (err) return this.initStructure()
@@ -42,7 +43,10 @@ export module NN {
         }
       }
   
-      appendFile(pwd+'/src/structure.json', JSON.stringify(this.structure), (err) => console.error(err))
+      appendFile(pwd+'/src/structure.json', JSON.stringify(this.structure), (err) => {
+        if (err) console.error(err)
+        console.log('✨ Added structure.json')
+      })
     }
   }
 
@@ -62,11 +66,11 @@ export module NN {
   export class Layer {
     neurons_amount: number
     neurons: Neuron[] = []
-    
+
     constructor(neurons_amount: number) {
       this.neurons_amount = neurons_amount
 
-      for (let i = 0; i < neurons_amount; i++) this.neurons.push(new Neuron())
+      for (let i = 0; i < neurons_amount; i++) this.neurons.push(new Neuron(Math.random()))
     }
   }
 
@@ -79,7 +83,7 @@ export module NN {
   } 
   
   /** Parse .data file and return dataset in type DatasetItem[] */
-  export function parse_data(data_url: string): DatasetItem[] {
+  export function parse_data(data_url: string): DatasetItem[] | undefined {
     let result: DatasetItem[] = []
     
     // Обнаруженные типы
@@ -114,15 +118,22 @@ export module NN {
       console.error('Указанный файл с датасетом не существует')
     }
 
+    console.log('✨ .data parsed successfully')
     return result
   }
 
   /** Creates a dataset */
   export class Dataset {
-    dataset: DatasetItem[]
+    dataset: DatasetItem[r
     
-    constructor(dataset: DatasetItem[]) {
+    constructor(dataset: DatasetItem[] | undefined) {
+      if (typeof dataset !== 'DatasetItem[]') {
+        return
+        console.log('')
+      }
+
       this.dataset = dataset
+      console.log('✨ Created a dataset')
     }
   }
 
