@@ -83,8 +83,8 @@ export module NN {
   } 
   
   /** Parse .data file and return dataset in type DatasetItem[] */
-  export function parse_data(data_url: string): DatasetItem[] | undefined {
-    let result: DatasetItem[] = []
+  export function parse_data(data_url: string): DatasetType | undefined {
+    let dataset_data: DatasetItem[] = []
     
     // Обнаруженные типы
     let output_data_types: string[] = []
@@ -109,32 +109,41 @@ export module NN {
         let output_data: any = data.at(-1)  // Результат в конце        
               
         // Добавляем данные в результат
-        result.push({
+        dataset_data.push({
           input_data: input_data,
           output_data: output_data_types.map(data_type => data_type === output_data ? 1 : 0)
         })
       })
     } catch (e) {
       console.error('Указанный файл с датасетом не существует')
+      return undefined
     }
 
     console.log('✨ .data parsed successfully')
-    return result
+    return {
+      output_data_types: output_data_types,
+      data: dataset_data
+    }
   }
 
   /** Creates a dataset */
   export class Dataset {
-    dataset: DatasetItem[r
+    dataset: DatasetType = {output_data_types: [], data: []}
     
-    constructor(dataset: DatasetItem[] | undefined) {
-      if (typeof dataset !== 'DatasetItem[]') {
+    constructor(dataset: DatasetType | undefined) {
+      if (dataset === undefined) {
+        console.error('Dataset is undefined')
         return
-        console.log('')
       }
 
       this.dataset = dataset
       console.log('✨ Created a dataset')
     }
+  }
+
+  interface DatasetType {
+    output_data_types: string[],
+    data: DatasetItem[]
   }
 
   /** Type of dataset parameters */
